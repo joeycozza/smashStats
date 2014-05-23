@@ -1,9 +1,8 @@
 var express = require('express');
+var matchDB = require('../db/matchDB');
 var router = express.Router();
 
 /* GET matches listing. */
-router.get('/', function(req, res) {
-	res.send(200);
-});
+router.get('/', matchDB.getMatches);
 
 module.exports = router;

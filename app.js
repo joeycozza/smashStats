@@ -7,6 +7,15 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var matches = require('./routes/matches');
 var utils = require('./lib/utils');
+var mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost/smash');
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'Database connection error:'));
+db.once('open', function () {
+	console.log('Mongoose connected to Smash MongoDB');
+});
+
 
 var app = express();
 

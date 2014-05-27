@@ -8,8 +8,25 @@ var userSchema = mongoose.Schema({
 
 var UserModel = mongoose.model('User', userSchema);
 
+exports.getUserModel = function() {
+	return UserModel;
+};
+
 exports.getAllUsers = function (req, res) {
 	UserModel.find({}, function (err, users) {
+		if (err) {
+			console.log(err);
+			res.send(500);
+		} else {
+			console.log('Hello');
+			res.send(users);
+		}
+	});
+};
+
+exports.getUserByPhoneNumber = function (req, res) {
+	var phoneNum = req.body.phoneNum;
+	UserModel.find({phoneNumber: phoneNum}, function (err, users) {
 		if (err) {
 			console.log(err);
 			res.send(500);
@@ -19,14 +36,18 @@ exports.getAllUsers = function (req, res) {
 	});
 };
 
-exports.getUserByPhoneNumber = function (req, res) {
-	var phoneNum = req.body.phoneNum;
-	UserModel.find({phoneNumber:phoneNum}, function (err, users) {
+exports.saveUser = function (req, res) {
+	var newUser = new UserModel({name: req.body.name,
+		phoneNumber: req.body.phoneNumber,
+		pictureUrl: req.body.pictureUrl});
+	newUser.save(function (err, savedUser) {
 		if (err) {
+			console.log('Error saving user to DB');
 			console.log(err);
 			res.send(500);
 		} else {
-			res.send(users);
+			res.send(savedUser);
 		}
 	});
+
 };

@@ -12,6 +12,10 @@ var matchSchema = mongoose.Schema({
 
 var MatchModel = mongoose.model('Match', matchSchema);
 
+exports.getMatchModel = function() {
+	return MatchModel;
+};
+
 exports.getAllMatches = function (req, res) {
 	MatchModel.find({}, function (err, matches) {
 		if (err) {

@@ -3,7 +3,9 @@ var mongoose = require('mongoose');
 var userSchema = mongoose.Schema({
 	name: {type: String, required: true},
 	phoneNumber: {type: String, required: true, unique: true},
-	pictureUrl: {type: String, required: true}
+	pictureUrl: {type: String, required: true},
+	matchesWon: [{type:String, ref:'Match'}],
+	matchesLost: [{type:String, ref:'Match'}]
 });
 
 var UserModel = mongoose.model('User', userSchema);
@@ -13,15 +15,20 @@ exports.getUserModel = function() {
 };
 
 exports.getAllUsers = function (req, res) {
-	UserModel.find({}, function (err, users) {
-		if (err) {
-			console.log(err);
-			res.send(500);
-		} else {
-			console.log('Hello');
-			res.send(users);
-		}
-	});
+
+	UserModel
+		.find({})
+		.populate({path:'matchesWon', match:{winner:this.phoneNumber}})
+		.populate({path:'matchesLost', match:{loser:this.phoneNumber}})
+		.exec(function (err, users) {
+			if (err) {
+				console.log(err);
+				res.send(500);
+			} else {
+				res.send(users);
+			}
+		});
+
 };
 
 exports.getUserByPhoneNumber = function (req, res) {
@@ -49,5 +56,4 @@ exports.saveUser = function (req, res) {
 			res.send(savedUser);
 		}
 	});
-
 };

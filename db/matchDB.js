@@ -3,16 +3,16 @@ var validCharacters = ['Luigi', 'Mario', 'Donkey Kong', 'Link', 'Samus', 'Captai
 	'Ness', 'Yoshi', 'Kirby', 'Fox', 'Pikachu', 'Jigglypuff'];
 var matchSchema = mongoose.Schema({
 	datePlayed: {type: String, required: true},
-	winner: {type: String, required: true},
+	winner: {type: String, required: true, ref: 'User'},
 	wStocksLeft: {type: Number, required: true, min: 1, max: 4},
 	wChar: {type: String, required: true, enum: validCharacters},
-	loser: {type: String, required: true},
+	loser: {type: String, required: true, ref: 'User'},
 	lChar: {type: String, required: true, enum: validCharacters}
 });
 
 var MatchModel = mongoose.model('Match', matchSchema);
 
-exports.getMatchModel = function() {
+exports.getMatchModel = function () {
 	return MatchModel;
 };
 
@@ -53,6 +53,28 @@ exports.getMatchesByCharacter = function (req, res) {
 			res.send(500);
 		} else {
 			res.send(matches);
+		}
+	});
+};
+
+
+exports.saveMatch = function (req, res) {
+	var newMatch = new MatchModel({
+		datePlayed: Date.now() + '',
+		winner: req.body.winner,
+		wStocksLeft: req.body.wStocksLeft,
+		wChar: req.body.wChar,
+		loser: req.body.loser,
+		lChar: req.body.lChar
+	});
+
+	newMatch.save(function (err, savedMatch) {
+		if (err) {
+			console.log('Error saving match to DB');
+			console.log(err);
+			res.send(500);
+		} else {
+			res.send(savedMatch);
 		}
 	});
 };

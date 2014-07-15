@@ -32,19 +32,17 @@ exports.getFakeUsers = function () {
 
 
 var match1 = {
-	datePlayed: curDate + '',
-	winner: '1234567890',
+	winner: '9999999999',
 	wStocksLeft: 2,
 	wChar: 'Fox',
-	loser: '6236284166',
+	loser: daBest.phoneNumber,
 	lChar: 'Fox'
 };
 var match2 = {
-	datePlayed: curDate + '',
-	winner: '1234567890',
+	winner: daBest.phoneNumber,
 	wStocksLeft: 1,
 	wChar: 'Fox',
-	loser: '6236284166',
+	loser: '9999999999',
 	lChar: 'Luigi'
 };
 

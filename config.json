@@ -1,0 +1,10 @@
+{
+	"testing": {
+		"dbHost": "mongodb://localhost/smashAutomatedTesting",
+		"logLevel": "dev"
+	},
+	"development": {
+		"dbHost": "mongodb://localhost/smashDev",
+		"logLevel": "dev"
+	}
+}

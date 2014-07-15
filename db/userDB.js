@@ -1,52 +1,51 @@
 var mongoose = require('mongoose');
+var MatchModel = require('./matchDB').getMatchModel();
 
 var userSchema = mongoose.Schema({
+	_id: {type: String, required: true, unique: true},
 	name: {type: String, required: true},
 	phoneNumber: {type: String, required: true, unique: true},
-	pictureUrl: {type: String, required: true},
-	matchesWon: [{type:String, ref:'Match'}],
-	matchesLost: [{type:String, ref:'Match'}]
+	pictureUrl: {type: String, required: true}
 });
 
 var UserModel = mongoose.model('User', userSchema);
 
-exports.getUserModel = function() {
+exports.getUserModel = function () {
 	return UserModel;
 };
 
-exports.getAllUsers = function (req, res) {
-
-	UserModel
-		.find({})
-		.populate({path:'matchesWon', match:{winner:this.phoneNumber}})
-		.populate({path:'matchesLost', match:{loser:this.phoneNumber}})
-		.exec(function (err, users) {
-			if (err) {
-				console.log(err);
-				res.send(500);
-			} else {
-				res.send(users);
-			}
-		});
-
-};
-
 exports.getUserByPhoneNumber = function (req, res) {
-	var phoneNum = req.body.phoneNum;
-	UserModel.find({phoneNumber: phoneNum}, function (err, users) {
+	var phoneNumber = req.body.phoneNumber;
+	UserModel.findOne({phoneNumber: phoneNumber}, function (err, user) {
 		if (err) {
 			console.log(err);
 			res.send(500);
 		} else {
-			res.send(users);
+
+			//go grab the matches and put it in the user here
+			MatchModel.find({$or: [
+				{winner: phoneNumber},
+				{loser: phoneNumber}
+			]}, function (err, matches) {
+				if (err) {
+					console.log(err);
+					res.send(500);
+				} else {
+					user._doc.matches = matches;
+					res.send(user);
+				}
+			});
 		}
 	});
 };
 
 exports.saveUser = function (req, res) {
-	var newUser = new UserModel({name: req.body.name,
+	var newUser = new UserModel({
+		_id: req.body.phoneNumber,
+		name: req.body.name,
 		phoneNumber: req.body.phoneNumber,
-		pictureUrl: req.body.pictureUrl});
+		pictureUrl: req.body.pictureUrl
+	});
 	newUser.save(function (err, savedUser) {
 		if (err) {
 			console.log('Error saving user to DB');

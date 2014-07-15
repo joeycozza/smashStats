@@ -4,14 +4,15 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var http = require('http');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
-var matches = require('./routes/matches');
-
 var utils = require('./lib/utils');
 var cors = require('./lib/cors');
 
 var configJSON = require('./config.json');
+
+var routes = require('./routes/index');
+var users = require('./routes/users');
+var matches = require('./routes/matches');
+
 
 var mongoose = require('mongoose');
 

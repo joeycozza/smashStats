@@ -34,9 +34,7 @@ describe('Saving A User', function () {
 		supertest(app)
 			.put('/users/')
 			.expect(200)
-			.send({name: 'Joey Test',
-				phoneNumber: '9999999999',
-				pictureUrl: 'http://fotozup.com/wp-content/uploads/2013/04/funny-mugshots-002.jpg'})
+			.send(fakeData.getTesty())
 			.end(function (err, res) {
 				res.should.have.status(200);
 				res.body.should.have.keys('name', 'phoneNumber', 'pictureUrl', '_id', '__v');
@@ -46,13 +44,12 @@ describe('Saving A User', function () {
 
 	it('Getting the saved user by phonenumber', function (done) {
 		supertest(app)
-			.post('/users/user')
-			.send({phoneNumber: '9999999999'})
+			.get('/users/' + fakeData.getTesty().phoneNumber)
 			.expect(200)
 			.end(function (err, res) {
 				res.should.have.status(200);
 				res.body.should.have.keys('name', 'phoneNumber', 'pictureUrl', '_id', '__v', 'matches');
-				res.body.name.should.equal('Joey Test');
+				res.body.name.should.equal(fakeData.getTesty().name);
 				res.body.matches.length.should.equal(0);
 				done();
 			});
@@ -87,13 +84,12 @@ describe('Saving A User', function () {
 
 	it('Getting the saved user by phonenumber', function (done) {
 		supertest(app)
-			.post('/users/user')
-			.send({phoneNumber: '9999999999'})
+			.get('/users/' + fakeData.getTesty().phoneNumber)
 			.expect(200)
 			.end(function (err, res) {
 				res.should.have.status(200);
 				res.body.should.have.keys('name', 'phoneNumber', 'pictureUrl', '_id', '__v', 'matches');
-				res.body.name.should.equal('Joey Test');
+				res.body.name.should.equal(fakeData.getTesty().name);
 				res.body.matches.length.should.equal(1);
 				done();
 			});
@@ -101,8 +97,7 @@ describe('Saving A User', function () {
 
 	it('Getting the saved user by phonenumber', function (done) {
 		supertest(app)
-			.post('/users/user')
-			.send({phoneNumber: fakeData.getDaBest().phoneNumber})
+			.get('/users/' + fakeData.getDaBest().phoneNumber)
 			.expect(200)
 			.end(function (err, res) {
 				res.should.have.status(200);

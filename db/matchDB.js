@@ -1,6 +1,10 @@
 var mongoose = require('mongoose');
+var fakeData = require('./fakeData');
+var utils = require('../lib/utils');
+
 var validCharacters = ['Luigi', 'Mario', 'Donkey Kong', 'Link', 'Samus', 'Captain Falcon',
 	'Ness', 'Yoshi', 'Kirby', 'Fox', 'Pikachu', 'Jigglypuff'];
+
 var matchSchema = mongoose.Schema({
 	datePlayed: {type: String, required: true},
 	winner: {type: String, required: true, ref: 'User'},
@@ -78,3 +82,20 @@ exports.saveMatch = function (req, res) {
 		}
 	});
 };
+
+if (!utils.isInTestMode()) {
+	MatchModel.find({}, function (err, matches) {
+		if (err) {
+			console.log(err);
+			return;
+		}
+		if (matches.length === 0) {
+			var match1 = new MatchModel(fakeData.getMatch1());
+			var match2 = new MatchModel(fakeData.getMatch2());
+			match1.datePlayed = Date.now();
+			match2.datePlayed = Date.now() + 500;
+			match1.save();
+			match2.save();
+		}
+	});
+}
